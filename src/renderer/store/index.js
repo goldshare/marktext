@@ -1,36 +1,70 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import { ipcRenderer } from 'electron'
 
-import editorStore from './editor'
-import aidouStore from './aidou'
+import listenForMain from './listenForMain'
+import project from './project'
+import editor from './editor'
+import aidou from './aidou'
+import layout from './layout'
+import preferences from './preferences'
 import autoUpdates from './autoUpdates'
+import notification from './notification'
+import tweet from './tweet'
+import commandCenter from './commandCenter'
 
 Vue.use(Vuex)
 
-const storeArray = [
-  editorStore,
-  aidouStore,
-  autoUpdates
-]
+// global states
+const state = {
+  platform: process.platform, // platform of system `darwin` | `win32` | `linux`
+  appVersion: process.versions.MARKTEXT_VERSION_STRING, // Mark Text version string
+  windowActive: true, // whether current window is active or focused
+  init: false // whether Mark Text is initialized
+}
 
-const { actions, mutations, state } = storeArray.reduce((acc, s) => {
-  const {actions, mutations, state} = s
-  return {
-    actions: Object.assign({}, acc.actions, actions),
-    mutations: Object.assign({}, acc.mutations, mutations),
-    state: Object.assign({}, acc.state, state)
+const getters = {}
+
+const mutations = {
+  SET_WIN_STATUS (state, status) {
+    state.windowActive = status
+  },
+  SET_INITIALIZED (state) {
+    state.init = true
   }
-}, {
-  actions: {},
-  mutations: {},
-  state: {}
-})
+}
+
+const actions = {
+  LINTEN_WIN_STATUS ({ commit, state }) {
+    ipcRenderer.on('mt::window-active-status', (e, { status }) => {
+      commit('SET_WIN_STATUS', status)
+    })
+  },
+
+  SEND_INITIALIZED ({ commit }) {
+    commit('SET_INITIALIZED')
+  }
+}
 
 const store = new Vuex.Store({
-  actions,
-  mutations,
   state,
-  getters: {}
+  getters,
+  mutations,
+  actions,
+  modules: {
+    // have no states
+    listenForMain,
+    autoUpdates,
+    notification,
+    tweet,
+    // have states
+    project,
+    aidou,
+    preferences,
+    editor,
+    layout,
+    commandCenter
+  }
 })
 
 export default store

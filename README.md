@@ -1,59 +1,61 @@
-<p align="center"><img src="https://github.com/marktext/marktext/blob/master/static/logo-small.png" alt="mark text" width="100" height="100"></p>
+<p align="center"><img src="static/logo-small.png" alt="Mark Text" width="100" height="100"></p>
 
 <h1 align="center">Mark Text</h1>
 
 <div align="center">
-  <a href="https://twitter.com/intent/tweet?text=Wow:&url=https%3A%2F%2Fgithub.com%2Fmarktext%2Fmarktext">
+  <a href="https://twitter.com/intent/tweet?via=marktextme&url=https://github.com/marktext/marktext/&text=What%20do%20you%20want%20to%20say%20to%20app?&hashtags=happyMarkText">
     <img src="https://img.shields.io/twitter/url/https/github.com/marktext/marktext.svg?style=for-the-badge" alt="twitter">
   </a>
 </div>
 <div align="center">
-  <strong>:high_brightness:Next generation markdown editor:crescent_moon:</strong>
-</div>
-<div align="center">
-  An <code>Electron</code> app for platforms of OS X Windows and Linux
+  <strong>:high_brightness: Next generation markdown editor :crescent_moon:</strong><br>
+  A simple and elegant open-source markdown editor that focused on speed and usability.<br>
+  <sub>Available for Linux, macOS and Windows.</sub>
 </div>
 
-<br />
+<br>
 
 <div align="center">
   <!-- Version -->
   <a href="https://marktext.github.io/website">
-    <img src="https://badge.fury.io/gh/jocs%2Fmarktext.svg">
+    <img src="https://badge.fury.io/gh/jocs%2Fmarktext.svg" alt="website">
   </a>
   <!-- License -->
-  <a href="https://marktext.github.io/website">
-    <img src="https://img.shields.io/github/license/marktext/marktext.svg">
+  <a href="LICENSE">
+    <img src="https://img.shields.io/github/license/marktext/marktext.svg" alt="LICENSE">
   </a>
   <!-- Build Status -->
-  <a href="https://marktext.github.io/website">
-    <img src="https://travis-ci.org/marktext/marktext.svg?branch=master" alt="">
+  <a href="https://travis-ci.org/marktext/marktext/">
+    <img src="https://travis-ci.org/marktext/marktext.svg?branch=master" alt="build">
   </a>
-  <!-- Downloads -->
-  <a href="https://marktext.github.io/website">
-    <img src="https://img.shields.io/github/downloads/marktext/marktext/total.svg" alt="">
+  <a href="https://ci.appveyor.com/project/marktext/marktext/branch/master">
+    <img src="https://ci.appveyor.com/api/projects/status/l4gxgydj0i95hmxg/branch/master?svg=true" alt="build">
   </a>
-  <!-- deps -->
-  <a href="https://marktext.github.io/website">
-    <img src="https://img.shields.io/hackage-deps/v/lens.svg" alt="">
+  <!-- Downloads total -->
+  <a href="https://github.com/marktext/marktext/releases">
+    <img src="https://img.shields.io/github/downloads/marktext/marktext/total.svg" alt="total download">
+  </a>
+  <!-- Downloads latest release -->
+  <a href="https://github.com/marktext/marktext/releases/latest">
+    <img src="https://img.shields.io/github/downloads/marktext/marktext/v0.16.1/total.svg" alt="latest download">
+  </a>
+  <!-- sponsors -->
+  <a href="https://opencollective.com/marktext">
+    <img src="https://opencollective.com/marktext/tiers/silver-sponsors/badge.svg?label=SilverSponsors&color=brightgreen" alt="sponsors">
   </a>
 </div>
 
 <div align="center">
   <h3>
-    <a href="https://marktext.github.io/website">
+    <a href="https://marktext.app">
       Website
-    </a>
-    <span> | </span>
-    <a href="https://github.com/marktext/marktext/blob/master/doc/i18n/zh_cn.md">
-      中文
     </a>
     <span> | </span>
     <a href="https://github.com/marktext/marktext#features">
       Features
     </a>
     <span> | </span>
-    <a href="https://github.com/marktext/marktext#download">
+    <a href="https://github.com/marktext/marktext#download-and-installation">
       Downloads
     </a>
     <span> | </span>
@@ -68,85 +70,183 @@
 </div>
 
 <div align="center">
-  <sub>This Markdown editor that could. Built with ❤︎ by
-  <a href="https://github.com/Jocs">Jocs</a> and
-  <a href="https://github.com/marktext/marktext/graphs/contributors">
-    contributors
+  <sub>Translations:</sub>
+  <a href="docs/i18n/zh_cn.md#readme">
+    <span>:cn:</span>
   </a>
+  <a href="docs/i18n/zh_tw.md#readme">
+    <span>:cn:</span>
+  </a>
+  <a href="docs/i18n/pl.md#readme">
+    <span>:poland:</span>
+  </a>
+  <a href="docs/i18n/ja.md#readme">
+    <span>:jp:</span>
+  </a>
+  <a href="docs/i18n/french.md#readme">
+    <span>:fr:</span>
+  </a>
+  <a href="docs/i18n/tr.md#readme">
+    <span>:tr:</span>
+  </a>
+  <a href="docs/i18n/spanish.md#readme">
+    <span>:es:</span>
+  </a>
+  <a href="docs/i18n/pt.md#readme">
+    <span>:portugal:</span>
+  </a>
+  <a href="docs/i18n/ko.md#readme">
+    <span>:kr:</span>
+  </a>
+</div>
+
+<div align="center">
+  <sub>This Markdown editor that could. Built with ❤︎ by
+    <a href="https://github.com/Jocs">Jocs</a> and
+    <a href="https://github.com/marktext/marktext/graphs/contributors">
+      contributors
+    </a>
+  </sub>
 </div>
 
 <br />
 
-![](https://github.com/marktext/marktext/blob/master/doc/marktext.gif)
+<h2 align="center">Supporting Mark Text</h2>
 
-### Features
+Mark Text is an MIT licensed open source project, and the latest version will always be downloadable for free from the GitHub release page. Mark Text is still in development, and its development is inseparable from all sponsors. I hope you join them:
 
-- Realtime preview and use [snabbdom](https://github.com/snabbdom/snabbdom) as it's render engine.
-- Support [CommonMark Spec](http://spec.commonmark.org/0.28/) and [GitHub Flavored Markdown Spec](http://spec.commonmark.org/0.28/).
+- [Become a backer or sponsor on Patreon](https://www.patreon.com/ranluo) or [One time donation](https://github.com/Jocs/sponsor.me)
+- [Become a backer or sponsor on Open Collective](https://opencollective.com/marktext)
+
+##### What's the difference between Patreon and Open Collective?
+
+Patreon: Funds will be directly sponsored to Luo Ran (@jocs) who created Mark Text and continues to maintain it.
+Open Collective: All expenses are transparent. The funds will be used for the development and maintenance of Mark Text, funding online and offline activities, and acquiring other necessary resources.
+Names and company logos of all sponsors (from both Patreon and Open Collective) will appear on the official website for Mark Text and in its README.md file.
+
+**Platinum Sponsors**
+
+<a href="https://opencollective.com/marktext#platinum-sponsors">
+ <img src="https://opencollective.com/marktext/tiers/platinum-sponsors.svg?avatarHeight=36&width=600">
+</a>
+
+**Gold Sponsors**
+
+<a href="https://opencollective.com/marktext#platinum-sponsors">
+  <img src="https://opencollective.com/marktext/tiers/gold-sponsors.svg?avatarHeight=36&width=600">
+</a>
+
+**Silver Sponsors**
+
+<a href="https://opencollective.com/marktext#platinum-sponsors">
+  <img src="https://opencollective.com/marktext/tiers/silver-sponsors.svg?avatarHeight=36&width=600">
+</a>
+
+**Bronze Sponsors**
+
+<a href="https://opencollective.com/marktext#platinum-sponsors">
+  <img src="https://opencollective.com/marktext/tiers/bronze-sponsors.svg?avatarHeight=36&width=600">
+</a>
+
+**Backers**
+
+<a href="https://opencollective.com/marktext#backers">
+  <img src="https://opencollective.com/marktext/tiers/backer.svg?avatarHeight=36&width=600">
+</a>
+
+## Screenshot
+
+![](docs/marktext.png?raw=true)
+
+## Features
+
+- Realtime preview (WYSIWYG) and a clean and simple interface to get a distraction-free writing experience.
+- Support [CommonMark Spec](https://spec.commonmark.org/0.29/), [GitHub Flavored Markdown Spec](https://github.github.com/gfm/) and selective support [Pandoc markdown](https://pandoc.org/MANUAL.html#pandocs-markdown).
+- Markdown extensions such as math expressions (KaTeX), front matter and emojis.
 - Support paragraphs and inline style shortcuts to improve your writing efficiency.
-- Output **HTML** and **PDF** file.
-- Dark and Light themes.
-- Various edit mode: **Source Code mode**、**Typewriter mode**、**Focus mode**.
+- Output **HTML** and **PDF** files.
+- Various themes: **Cadmium Light**, **Material Dark** etc.
+- Various editing modes: **Source Code mode**, **Typewriter mode**, **Focus mode**.
 
-<h4 align="center">:crescent_moon:Dark and Light themes:high_brightness:</h4>
+<h4 align="center">:crescent_moon:themes:high_brightness:</h4>
 
-|                     Dark :crescent_moon:                     |                    Light:high_brightness:                    |
-| :----------------------------------------------------------: | :----------------------------------------------------------: |
-| ![](https://github.com/marktext/marktext/blob/master/doc/dark.jpg) | ![](https://github.com/marktext/marktext/blob/master/doc/light.jpg) |
+| Cadmium Light                                     | Dark                                            |
+|:-------------------------------------------------:|:-----------------------------------------------:|
+| ![](docs/themeImages/cadmium-light.png?raw=true)  | ![](docs/themeImages/dark.png?raw=true)         |
+| Graphite Light                                    | Material Dark                                   |
+| ![](docs/themeImages/graphite-light.png?raw=true) | ![](docs/themeImages/materal-dark.png?raw=true) |
+| Ulysses Light                                     | One Dark                                        |
+| ![](docs/themeImages/ulysses-light.png?raw=true)  | ![](docs/themeImages/one-dark.png?raw=true)     |
 
 <h4 align="center">:smile_cat:Edit modes:dog:</h4>
 
-|                         Source Code                          |                          Typewriter                          |                            Focus                             |
-| :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
-| ![](https://github.com/marktext/marktext/blob/master/doc/source.gif) | ![](https://github.com/marktext/marktext/blob/master/doc/typewriter.gif) | ![](https://github.com/marktext/marktext/blob/master/doc/focus.gif) |
+| Source Code          | Typewriter               | Focus               |
+|:--------------------:|:------------------------:|:-------------------:|
+| ![](docs/source.gif) | ![](docs/typewriter.gif) | ![](docs/focus.gif) |
 
-### Why write another editor?
+## Why write another editor?
 
-1. I love writing, I have used a lot of markdown editors, there is still not a editor can fully meet my needs, I don't like to be disturbed when I write, and some unbearable bug, **Mark Text** use virtual DOM to render the page, So it's high efficiency, and open source to friends all love markdown and writing.
-2. As mentioned above, **Mark Text** will be open source forever. It is also hoped that all markdown lovers can contribute their own code, and develop **Mark Text** into a popular markdown editor.
-3. There are many markdown editors, and each editor has its own characteristics, but it is also difficult to satisfy all markdown users' needs. I hope **Mark Text** can satisfy markdown users' needs as much as possible. Although the latest **Mark Text** is still not perfect, but we are trying to make it perfect.
+1. I love writing. I have used a lot of markdown editors, yet there is still not an editor that can fully meet my needs. I don't like to be disturbed when I write by some unbearable bug. **Mark Text** uses virtual DOM to render pages which has the added benefits of being highly efficient and being open source. That way anyone who loves markdown and writing can use Mark Text.
+2. As mentioned above, **Mark Text** is completely free and open source and will be open source forever. We hope that all markdown lovers will contribute their own code and help develop **Mark Text** into a popular markdown editor.
+3. There are many markdown editors and all have their own merits, some have features which others don't. It's difficult to satisfy each markdown users' needs but we hope **Mark Text** will be able to satisfy each markdown user as much as possible. Although the latest **Mark Text** is still not perfect, we will try to make it as best as we possibly can.
 
-### Download and Install
+## Download and Installation
 
-Mark Text build for these platforms ![Conda](https://img.shields.io/conda/pn/conda-forge/python.svg?style=for-the-badge)
+![platform](https://img.shields.io/static/v1.svg?label=Platform&message=Linux-64%20|%20macOS-64%20|%20Win-32%20|%20Win-64&style=for-the-badge)
 
-| ![]( https://github.com/ryanoasis/nerd-fonts/wiki/screenshots/v1.0.x/mac-pass-sm.png) | ![]( https://github.com/ryanoasis/nerd-fonts/wiki/screenshots/v1.0.x/windows-pass-sm.png) | ![]( https://github.com/ryanoasis/nerd-fonts/wiki/screenshots/v1.0.x/linux-pass-sm.png) |
-| :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
-| [v0.6.14](https://github.com/marktext/marktext/releases/download/v0.6.14/marktext-0.6.14.dmg) | [v0.6.14](https://github.com/marktext/marktext/releases/download/v0.6.14/marktext-setup-0.6.14.exe) | [v 0.6.14](https://github.com/marktext/marktext/releases/download/v0.6.14/marktext-0.6.14-x86_64.AppImage) |
+| ![](https://raw.githubusercontent.com/wiki/ryanoasis/nerd-fonts/screenshots/v1.0.x/mac-pass-sm.png)                                                                                                  | ![](https://raw.githubusercontent.com/wiki/ryanoasis/nerd-fonts/screenshots/v1.0.x/windows-pass-sm.png)                                                                                                          | ![](https://raw.githubusercontent.com/wiki/ryanoasis/nerd-fonts/screenshots/v1.0.x/linux-pass-sm.png)                                                                                                                        |
+|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
+| [![latest version](https://img.shields.io/github/downloads/marktext/marktext/latest/marktext.dmg.svg)](https://github.com/marktext/marktext/releases/download/v0.16.1/marktext.dmg) | [![latest version](https://img.shields.io/github/downloads/marktext/marktext/latest/marktext-setup.exe.svg)](https://github.com/marktext/marktext/releases/download/v0.16.1/marktext-setup.exe) | [![latest version](https://img.shields.io/github/downloads/marktext/marktext/latest/marktext-x86_64.AppImage.svg)](https://github.com/marktext/marktext/releases/download/v0.16.1/marktext-x86_64.AppImage) |
 
-Not found your system ? Go the the [release page](https://github.com/marktext/marktext/releases), still not found ? Shoot an [issue](https://github.com/marktext/marktext/issues).
+Want to see new features of the latest version? Please refer to [CHANGELOG](.github/CHANGELOG.md).
 
-Want to see new features in this version? Refer to [CHANGELOG](https://github.com/marktext/marktext/blob/master/.github/CHANGELOG.md)
+#### macOS
 
-If you use OS X system, you can install Mark Text by [**homebrew cask**](https://github.com/caskroom/homebrew-cask), to start using Homebrew-Cask, you just need [Homebrew](http://brew.sh/) installed.
+You can either download the latest `marktext-%version%.dmg` from the [release page](https://github.com/marktext/marktext/releases/latest) or install Mark Text using [**homebrew cask**](https://github.com/caskroom/homebrew-cask). To use Homebrew-Cask you just need to have [Homebrew](https://brew.sh/) installed.
 
-> brew cask install mark-text
+```bash
+brew cask install mark-text
+```
 
-![](https://github.com/marktext/marktext/blob/master/doc/brew-cask.jpg)
+#### Windows
 
-### Development
+Simply download and install Mark Text via setup wizard (`marktext-setup-%version%.exe`) and choose whether to install per-user or machine wide.
 
-If you wish to build **Mark Text** yourself.
+#### Linux
 
-- first clone this repo.
-- Run `npm install`
-- Run `npm run build`
-- copy the build app to Applications folder, or if on Windows run the executable installer.
+Please follow the [Linux installation instructions](docs/LINUX.md).
 
-When you use **Mark Text**, if you have any questions, you are welcome to write an issue, but I hope you follow the format of issue. Of course, if you can submit a PR directly, it will be appreciated.
+#### Other
+
+All binaries for Linux, macOS and Windows can be downloaded from the [release page](https://github.com/marktext/marktext/releases/latest). If a version is unavailable for your system, then please open an [issue](https://github.com/marktext/marktext/issues).
+
+## Development
+
+If you wish to build **Mark Text** yourself, please check out our [build instructions](docs/dev/BUILD.md).
+
+- [User documentation](docs/README.md)
+- [Developer documentation](docs/dev/README.md)
+
+If you have any questions regarding **Mark Text**, you are welcome to write an issue. When doing so please use the default format found when opening an issue. Of course, if you submit a PR directly, it will be greatly appreciated.
+
+## Integrations
+
+- [Alfred Workflow](http://www.packal.org/workflow/mark-text): A Workflow for the macOS app Alfred: Use "mt" to open files/folder with Mark Text.
 
 ## Contribution
 
-Please make sure to read the [Contributing Guide](https://github.com/marktext/marktext/blob/master/.github/CONTRIBUTING.md) before making a pull request. Want to add some features to Mark Text? Reference [TODO LIST](https://github.com/marktext/marktext/blob/master/.github/TODOLIST.md)
+Mark Text is in full development, please make sure to read the [Contributing Guide](CONTRIBUTING.md) before making a pull request. Want to add some features to Mark Text? Refer to our [roadmap](https://github.com/marktext/marktext/projects) and open issues.
 
-Thank you to all the people who have already contributed to Mark Text!
+## Contributors
 
-[![Jocs](https://avatars0.githubusercontent.com/u/9712830?s=150&v=4)](https://github.com/Jocs) | [![ywwhack](https://avatars1.githubusercontent.com/u/8746197?s=150&v=4)](https://github.com/ywwhack) | [![notAlaanor](https://avatars1.githubusercontent.com/u/17591936?s=150&v=4)](https://github.com/notAlaanor)
-:---:|:---:|:---:
-[Jocs](https://github.com/Jocs) | [ywwhack](https://github.com/ywwhack) | [notAlaanor](https://github.com/notAlaanor)
+Thank you to all the people who have already contributed to Mark Text[[contributors](https://github.com/marktext/marktext/graphs/contributors)]
 
-### License
+Special thanks to @[Yasujizr](https://github.com/Yasujizr) who designed the Mark Text logo.
 
- [**MIT**](https://github.com/marktext/marktext/blob/master/LICENSE).
+<a href="https://github.com/marktext/marktext/graphs/contributors"><img src="https://opencollective.com/marktext/contributors.svg?width=890" /></a>
 
-Copyright (c) 2017-present, Jocs
+## License
+
+[**MIT**](LICENSE).
+
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fmarktext%2Fmarktext.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fmarktext%2Fmarktext?ref=badge_large)

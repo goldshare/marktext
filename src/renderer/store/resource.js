@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios from '../axios'
 import { serialize, merge, dataURItoBlob } from '../util'
 
 const CONFIG = {
@@ -26,7 +26,6 @@ const resource = {
     })
     const queryURL = `${api}?${serialize(params)}`
     return axios.get(queryURL, { withCredentials: true }).then(({ data = {} }) => {
-      console.log(data)
       return {
         data: (data.items || []).map(it => ({
           link: it.locImageLink,
@@ -37,11 +36,16 @@ const resource = {
     })
   },
   fetchImgToBase64 (url) {
-    return axios.get(url, { responseType: 'blob' })
+    return axios({
+      method: 'get',
+      url,
+      responseType: 'blob'
+    })
       .then(({ data }) => new Promise((resolve, reject) => {
         const reader = new window.FileReader()
         reader.onloadend = () => resolve(reader.result)
         reader.onerror = reject
+
         reader.readAsDataURL(data)
       }))
   },

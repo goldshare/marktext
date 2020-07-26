@@ -3,16 +3,16 @@
 process.env.NODE_ENV = 'production'
 
 const { say } = require('cfonts')
+const path = require('path')
 const chalk = require('chalk')
 const del = require('del')
-const { spawn } = require('child_process')
+const fs = require('fs-extra')
 const webpack = require('webpack')
 const Multispinner = require('multispinner')
 
 
 const mainConfig = require('./webpack.main.config')
 const rendererConfig = require('./webpack.renderer.config')
-const webConfig = require('./webpack.web.config')
 
 const doneLog = chalk.bgGreen.white(' DONE ') + ' '
 const errorLog = chalk.bgRed.white(' ERROR ') + ' '
@@ -29,10 +29,15 @@ function clean () {
   process.exit()
 }
 
-function build () {
+async function build () {
   greeting()
 
   del.sync(['dist/electron/*', '!.gitkeep'])
+  del.sync(['static/themes/*'])
+
+  const from = path.resolve(__dirname, '../src/muya/themes')
+  const to = path.resolve(__dirname, '../static/themes')
+  await fs.copy(from, to)
 
   const tasks = ['main', 'renderer']
   const m = new Multispinner(tasks, {
@@ -97,20 +102,6 @@ function pack (config) {
   })
 }
 
-function web () {
-  del.sync(['dist/web/*', '!.gitkeep'])
-  webpack(webConfig, (err, stats) => {
-    if (err || stats.hasErrors()) console.log(err)
-
-    console.log(stats.toString({
-      chunks: false,
-      colors: true
-    }))
-
-    process.exit()
-  })
-}
-
 function greeting () {
   const cols = process.stdout.columns
   let text = ''
@@ -125,6 +116,7 @@ function greeting () {
       font: 'simple3d',
       space: false
     })
-  } else console.log(chalk.yellow.bold('\n  lets-build'))
-  console.log()
+  } else {
+    console.log(chalk.yellow.bold('\n  lets-build'))
+  }
 }

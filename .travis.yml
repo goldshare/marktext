@@ -1,43 +1,86 @@
-# Commented sections below can be used to run tests on the CI server
-# https://simulatedgreg.gitbooks.io/electron-vue/content/en/testing.html#on-the-subject-of-ci-testing
-osx_image: xcode8.3
-sudo: required
-dist: trusty
-language: c
-matrix:
+language: node_js
+node_js:
+  - 12
+
+jobs:
   include:
   - os: osx
-  - os: linux
-    env: CC=clang CXX=clang++ npm_config_clang=1
+    osx_image: xcode9.4
+    env: CC=clang CXX=clang++ npm_config_clang=1 MARKTEXT_IS_STABLE=1 MARKTEXT_EXIT_ON_ERROR=1
     compiler: clang
+  - os: linux
+    dist: bionic
+    env: CC=clang CXX=clang++ npm_config_clang=1 MARKTEXT_IS_STABLE=1 MARKTEXT_EXIT_ON_ERROR=1 DISPLAY=:99.0
+    compiler: clang
+    services:
+      - xvfb
+
 cache:
   directories:
   - node_modules
   - "$HOME/.electron"
-  - "$HOME/.cache"
+  - "$HOME/.cache/electron"
+  - "$HOME/.cache/electron-builder"
+  - "$HOME/.cache/yarn"
+
 addons:
   apt:
     packages:
     - libgnome-keyring-dev
     - icnsutils
-    #- xvfb
+    - graphicsmagick
+    - xz-utils
+    - xvfb
+    # atom/keyboard-layout
+    - libx11-dev
+    - libxkbfile-dev
+    # atom/node-keytar
+    - libsecret-1-dev
+    # fontmanager
+    - libfontconfig-dev
+    # Build RPM on Ubuntu
+    - rpm
+
 before_install:
-- mkdir -p /tmp/git-lfs && curl -L https://github.com/github/git-lfs/releases/download/v1.2.1/git-lfs-$([
-  "$TRAVIS_OS_NAME" == "linux" ] && echo "linux" || echo "darwin")-amd64-1.2.1.tar.gz
-  | tar -xz -C /tmp/git-lfs --strip-components 1 && /tmp/git-lfs/git-lfs pull
-- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install --no-install-recommends -y icnsutils graphicsmagick xz-utils; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get -qq update ; fi
+
+  #- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update ; fi
+
 install:
-#- export DISPLAY=':99.0'
-#- Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
-- nvm install 8
-- curl -o- -L https://yarnpkg.com/install.sh | bash
-- source ~/.bashrc
-- npm install -g xvfb-maybe
-- yarn
+  - curl -o- -L https://yarnpkg.com/install.sh | bash
+  - source ~/.bashrc
+
+  - $CC --version
+  - $CXX --version
+  - npm --version
+  - yarn --version
+
+  # Fix cache between Linux and macOS build workers.
+  - rm -rf node_modules/vscode-ripgrep
+
+  - yarn install --check-files --frozen-lockfile
+
 script:
-#- xvfb-maybe node_modules/.bin/karma start test/unit/karma.conf.js
-#- yarn run pack && xvfb-maybe node_modules/.bin/mocha test/e2e
-- yarn run release
+  - yarn run lint
+  - yarn run validate-licenses
+
+  # Unit and e2e tests
+  - yarn run test
+
+  # Build binaries
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then yarn run release:linux --publish always ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then yarn run release:mac --publish always ; fi
+
+  # Calculate checksums
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sha256sum build/marktext-x64.tar.gz ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sha256sum build/marktext-x86_64.AppImage ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sha256sum build/marktext-*.deb ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sha256sum build/marktext-*.rpm ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then shasum -a 256 build/marktext-mac.zip ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then shasum -a 256 build/marktext.dmg ; fi
+
 branches:
   only:
   - master
+  - develop
+  - /^release-v[0-9.]+(?:-[0-9a-zA-Z\.]+)?$/

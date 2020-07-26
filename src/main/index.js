@@ -1,51 +1,84 @@
-'use strict'
+import './globalSetting'
+import path from 'path'
+import { app, dialog } from 'electron'
+import cli from './cli'
+import setupExceptionHandler, { initExceptionLogger } from './exceptionHandler'
+import log from 'electron-log'
+import App from './app'
+import Accessor from './app/accessor'
+import setupEnvironment from './app/env'
+import { getLogLevel } from './utils'
 
-import { app, Menu } from 'electron'
-import configureMenu, { dockMenu } from './menus'
-import createWindow, { windows } from './createWindow'
-// import { autoUpdater } from "electron-updater"
+const initializeLogger = appEnvironment => {
+  log.transports.console.level = process.env.NODE_ENV === 'development' ? true : 'error'
+  log.transports.rendererConsole = null
+  log.transports.file.file = path.join(appEnvironment.paths.logPath, 'main.log')
+  log.transports.file.level = getLogLevel()
+  log.transports.file.sync = true
+  log.transports.file.init()
+  initExceptionLogger()
+}
 
-const openFilesCache = []
+// -----------------------------------------------
 
-const onReady = () => {
-  if (openFilesCache.length) {
-    openFilesCache.forEach(path => createWindow(path))
-    openFilesCache.length = 0 // empty the open file path cache
-  } else {
-    createWindow()
-  }
-  const menu = Menu.buildFromTemplate(configureMenu({ app }))
-  Menu.setApplicationMenu(menu)
-  if (process.platform === 'darwin') {
-    // app.dock is only for macosx
-    app.dock.setMenu(dockMenu)
+// NOTE: We only support Linux, macOS and Windows but not BSD nor SunOS.
+if (!/^(darwin|win32|linux)$/i.test(process.platform)) {
+  process.stdout.write(`Operating system "${process.platform}" is not supported! Please open an issue at "https://github.com/marktext/marktext".\n`)
+  process.exit(1)
+}
+
+setupExceptionHandler()
+
+const args = cli()
+const appEnvironment = setupEnvironment(args)
+initializeLogger(appEnvironment)
+
+// Workaround for GH#1359
+if (process.platform === 'linux' && process.env.XDG_SESSION_TYPE === 'wayland') {
+  app.disableHardwareAcceleration()
+}
+
+if (args['--disable-gpu']) {
+  app.disableHardwareAcceleration()
+}
+
+// Make Mark Text a single instance application.
+if (!process.mas && process.env.NODE_ENV !== 'development') {
+  const gotSingleInstanceLock = app.requestSingleInstanceLock()
+  if (!gotSingleInstanceLock) {
+    process.stdout.write('Other Mark Text instance detected: exiting...\n')
+    app.exit()
   }
 }
 
-const openFile = (event, path) => {
-  event.preventDefault()
-  if (app.isReady()) {
-    createWindow(path)
-  } else {
-    openFilesCache.push(path)
+// Mark Text environment is configured successfully. You can now access paths, use the logger etc.
+// Create other instances that need access to the modules from above.
+let accessor = null
+try {
+  accessor = new Accessor(appEnvironment)
+} catch (err) {
+  // Catch errors that may come from invalid configuration files like settings.
+  const msgHint = err.message.includes('Config schema violation')
+    ? 'This seems to be an issue with your configuration file(s). ' : ''
+  log.error(`Loading Mark Text failed during initialization! ${msgHint}`, err)
+
+  const EXIT_ON_ERROR = !!process.env.MARKTEXT_EXIT_ON_ERROR
+  const SHOW_ERROR_DIALOG = !process.env.MARKTEXT_ERROR_INTERACTION
+  if (!EXIT_ON_ERROR && SHOW_ERROR_DIALOG) {
+    dialog.showErrorBox(
+      'There was an error during loading',
+      `${msgHint}${err.message}\n\n${err.stack}`
+    )
   }
+  process.exit(1)
 }
 
-app.on('open-file', openFile)
+// Use synchronous only to report errors in early stage of startup.
+log.transports.file.sync = false
 
-app.on('ready', onReady)
+// -----------------------------------------------
+// Be careful when changing code before this line!
+// NOTE: Do not create classes or other code before this line!
 
-app.on('window-all-closed', () => {
-  app.removeListener('open-file', openFile)
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
-})
-
-app.on('activate', () => {
-  // On OS X it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
-  if (windows.size === 0) {
-    onReady()
-  }
-})
+const marktext = new App(accessor, args)
+marktext.init()

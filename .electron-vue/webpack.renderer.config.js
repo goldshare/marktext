@@ -3,24 +3,28 @@
 process.env.BABEL_ENV = 'renderer'
 
 const path = require('path')
-const { dependencies } = require('../package.json')
 const webpack = require('webpack')
-
-const BabiliWebpackPlugin = require('babili-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const MiniCssExtractPlugin = require("mini-css-extract-plugin")
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const VueLoaderPlugin = require('vue-loader/lib/plugin')
+const SpritePlugin = require('svg-sprite-loader/plugin')
+const postcssPresetEnv = require('postcss-preset-env')
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 
+const { getRendererEnvironmentDefinitions } = require('./marktextEnvironment')
+const { dependencies } = require('../package.json')
+const proMode = process.env.NODE_ENV === 'production'
 /**
  * List of node_modules to include in webpack bundle
- *
  * Required for specific packages like Vue UI libraries
  * that provide pure *.vue files that need compiling
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/webpack-configurations.html#white-listing-externals
  */
-let whiteListedModules = ['vue']
+const whiteListedModules = ['vue']
 
-let rendererConfig = {
+const rendererConfig = {
+  mode: 'development',
   devtool: '#cheap-module-eval-source-map',
   entry: {
     renderer: path.join(__dirname, '../src/renderer/main.js')
@@ -31,22 +35,43 @@ let rendererConfig = {
   module: {
     rules: [
       {
+        test: require.resolve(path.join(__dirname, '../src/muya/lib/assets/libs/snap.svg-min.js')),
+        use: 'imports-loader?this=>window,fix=>module.exports=0',
+      },
+      {
         test: /\.(js|vue)$/,
         enforce: 'pre',
         exclude: /node_modules/,
         use: {
           loader: 'eslint-loader',
           options: {
-            formatter: require('eslint-friendly-formatter')
+            formatter: require('eslint-friendly-formatter'),
+            failOnError: true
           }
         }
       },
       {
+        test: /(theme\-chalk(?:\/|\\)index|exportStyle|katex|github\-markdown|prism[\-a-z]*|\.theme|headerFooterStyle)\.css$/,
+        use: [
+          'to-string-loader',
+          'css-loader'
+        ]
+      },
+      {
         test: /\.css$/,
-        use: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: 'css-loader'
-        })
+        exclude: /(theme\-chalk(?:\/|\\)index|exportStyle|katex|github\-markdown|prism[\-a-z]*|\.theme|headerFooterStyle)\.css$/,
+        use: [
+          proMode ? MiniCssExtractPlugin.loader : 'style-loader',
+          { loader: 'css-loader', options: { importLoaders: 1 } },
+          { loader: 'postcss-loader', options: {
+            ident: 'postcss',
+            plugins: () => [
+              postcssPresetEnv({
+                stage: 0
+              })
+            ]
+          } }
+        ]
       },
       {
         test: /\.html$/,
@@ -54,7 +79,14 @@ let rendererConfig = {
       },
       {
         test: /\.js$/,
-        use: 'babel-loader',
+        use: [
+          {
+            loader: 'babel-loader',
+            options: {
+              cacheDirectory: true
+            }
+          }
+        ],
         exclude: /node_modules/
       },
       {
@@ -66,16 +98,25 @@ let rendererConfig = {
         use: {
           loader: 'vue-loader',
           options: {
-            extractCSS: process.env.NODE_ENV === 'production',
-            loaders: {
-              sass: 'vue-style-loader!css-loader!sass-loader?indentedSyntax=1',
-              scss: 'vue-style-loader!css-loader!sass-loader'
-            }
+            sourceMap: true
           }
         }
       },
       {
-        test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
+        test: /\.svg$/,
+        use: [
+          {
+            loader: 'svg-sprite-loader',
+            options: {
+              extract: true,
+              publicPath: './static/'
+            }
+          },
+          'svgo-loader'
+        ]
+      },
+      {
+        test: /\.(png|jpe?g|gif)(\?.*)?$/,
         use: {
           loader: 'url-loader',
           query: {
@@ -97,19 +138,25 @@ let rendererConfig = {
         use: {
           loader: 'url-loader',
           query: {
-            limit: 10000,
+            limit: 100000,
             name: 'fonts/[name]--[folder].[ext]'
           }
         }
+      },
+      {
+        test: /\.md$/,
+        use: [
+          'raw-loader'
+        ]
       }
     ]
   },
   node: {
-    __dirname: process.env.NODE_ENV !== 'production',
-    __filename: process.env.NODE_ENV !== 'production'
+    __dirname: !proMode,
+    __filename: !proMode
   },
   plugins: [
-    new ExtractTextPlugin('styles.css'),
+    new SpritePlugin(),
     new HtmlWebpackPlugin({
       filename: 'index.html',
       template: path.resolve(__dirname, '../src/index.ejs'),
@@ -122,8 +169,14 @@ let rendererConfig = {
         ? path.resolve(__dirname, '../node_modules')
         : false
     }),
-    new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoEmitOnErrorsPlugin()
+    new webpack.NoEmitOnErrorsPlugin(),
+    new webpack.DefinePlugin(getRendererEnvironmentDefinitions()),
+    // Use node http request instead axios's XHR adapter.
+    new webpack.NormalModuleReplacementPlugin(
+      /.+\/node_modules\/axios\/lib\/adapters\/xhr\.js$/,
+      'http.js'
+    ),
+    new VueLoaderPlugin()
   ],
   output: {
     filename: '[name].js',
@@ -132,7 +185,11 @@ let rendererConfig = {
   },
   resolve: {
     alias: {
+      'main': path.join(__dirname, '../src/main'),
       '@': path.join(__dirname, '../src/renderer'),
+      'common': path.join(__dirname, '../src/common'),
+      'muya': path.join(__dirname, '../src/muya'),
+      snapsvg: path.join(__dirname, '../src/muya/lib/assets/libs/snap.svg-min.js'),
       'vue$': 'vue/dist/vue.esm.js'
     },
     extensions: ['.js', '.vue', '.json', '.css', '.node']
@@ -143,22 +200,43 @@ let rendererConfig = {
 /**
  * Adjust rendererConfig for development settings
  */
-if (process.env.NODE_ENV !== 'production') {
+if (!proMode) {
   rendererConfig.plugins.push(
     new webpack.DefinePlugin({
       '__static': `"${path.join(__dirname, '../static').replace(/\\/g, '\\\\')}"`
-    })
+    }),
+    new webpack.HotModuleReplacementPlugin()
   )
+}
+
+if (process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'test' &&
+  !process.env.MARKTEXT_DEV_HIDE_BROWSER_ANALYZER) {
+  rendererConfig.plugins.push(
+    new BundleAnalyzerPlugin()
+  )
+}
+
+// Fix debugger breakpoints
+if (!proMode && process.env.MARKTEXT_BUILD_VSCODE_DEBUG) {
+  rendererConfig.devtool = '#inline-source-map'
 }
 
 /**
  * Adjust rendererConfig for production settings
  */
-if (process.env.NODE_ENV === 'production') {
-  rendererConfig.devtool = ''
-
+if (proMode) {
+  rendererConfig.devtool = '#nosources-source-map'
+  rendererConfig.mode = 'production'
   rendererConfig.plugins.push(
-    new BabiliWebpackPlugin(),
+    new webpack.DefinePlugin({
+      'process.env.UNSPLASH_ACCESS_KEY': JSON.stringify(process.env.UNSPLASH_ACCESS_KEY)
+    }),
+    new MiniCssExtractPlugin({
+      // Options similar to the same options in webpackOptions.output
+      // both options are optional
+      filename: '[name].[hash].css',
+      chunkFilename: '[id].[hash].css'
+    }),
     new CopyWebpackPlugin([
       {
         from: path.join(__dirname, '../static'),
@@ -170,9 +248,6 @@ if (process.env.NODE_ENV === 'production') {
         to: path.join(__dirname, '../dist/electron/codemirror/mode/[name]/[name].js')
       }
     ]),
-    new webpack.DefinePlugin({
-      'process.env.NODE_ENV': '"production"'
-    }),
     new webpack.LoaderOptionsPlugin({
       minimize: true
     })

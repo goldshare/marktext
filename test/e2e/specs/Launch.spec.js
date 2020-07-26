@@ -7,7 +7,11 @@ describe('Launch', function () {
   it('shows the proper application title', function () {
     return this.app.client.getTitle()
       .then(title => {
-        expect(title).to.equal('aganippe')
+        const result = /^Mark Text|Untitled-1 - Mark Text$/.test(title)
+        if (!result) {
+          console.error(`AssertionError: expected '${title}' to equal 'Mark Text' or 'Untitled-1'`)
+          expect(false).to.equal(true)
+        }
       })
   })
 })
